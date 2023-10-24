@@ -1,0 +1,10 @@
+../Core/Src/main.c:72:5:main	8	static
+../Core/Src/main.c:116:6:SystemClock_Config	88	static
+../Core/Src/main.c:158:13:MX_USB_PCD_Init	8	static
+../Core/Src/main.c:191:13:MX_GPIO_Init	48	static
+../Core/Src/main.c:242:6:Delay	16	static
+../Core/Src/main.c:247:6:BitBangPWM_Init_1	32	static
+../Core/Src/main.c:259:6:BitBangPWM_Init_2	32	static
+../Core/Src/main.c:271:6:BitBangPWM_SetDutyCycle_1	24	static
+../Core/Src/main.c:287:6:BitBangPWM_SetDutyCycle_2	24	static
+../Core/Src/main.c:310:6:Error_Handler	4	static,ignoring_inline_asm
