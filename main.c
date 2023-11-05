@@ -19,11 +19,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stdbool.h"
-#include "tim.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,7 +44,7 @@
 PCD_HandleTypeDef hpcd_USB_FS;
 
 /* USER CODE BEGIN PV */
-//TIM_HandleTypeDef htim6;
+TIM_HandleTypeDef htim6;
 
 /* USER CODE END PV */
 
@@ -66,7 +65,7 @@ void reverse();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-//TIM_HandleTypeDef htim2;
+
 /* USER CODE END 0 */
 
 /**
@@ -82,7 +81,7 @@ int main(void)
     SystemClock_Config();
     MX_GPIO_Init();
 
-
+    MX_TIM6_Init();
 
   /* USER CODE END 1 */
 
