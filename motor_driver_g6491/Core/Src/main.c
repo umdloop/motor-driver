@@ -123,6 +123,9 @@ int main(void)
 
     /* USER CODE END WHILE */
 	  reverse();
+	  HAL_TIM_Base_Start_IT(&htim6);
+
+
 
     /* USER CODE BEGIN 3 */
   }
@@ -311,6 +314,14 @@ void reverse() {
 	  SetDutyCycle(0, 10, PWM1_Pin);
 }
 
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
+	// 16 + 4 // +16 off, 0 on // flip bits without hal call
+	GPIOB->BSRR = (1 << (16 + 0)); // pin 0 off
+	GPIOB->BSRR = (1 << (0 + 1)); // pin 1 on
+
+//	 consider using toggle func here
+
+}
 
 /* USER CODE END 4 */
 

@@ -18,11 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32g4xx.h"
-#include "stm32g4xx_hal.h"
+#include "stdbool.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,6 +44,7 @@
 PCD_HandleTypeDef hpcd_USB_FS;
 
 /* USER CODE BEGIN PV */
+TIM_HandleTypeDef htim6;
 
 /* USER CODE END PV */
 
@@ -56,8 +57,10 @@ static void MX_USB_PCD_Init(void);
 void Delay(uint32_t ms);
 void BitBangPWM_Init_1();
 void BitBangPWM_Init_2();
-void BitBangPWM_SetDutyCycle_1(uint16_t dutyCycle, uint16_t period);
+void SetDutyCycle(uint16_t dutyCycle, uint16_t period, uint16_t pin);
 void BitBangPWM_SetDutyCycle_2(uint16_t dutyCycle, uint16_t period);
+void forward();
+void reverse();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -73,6 +76,13 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
+
+    HAL_Init();
+    SystemClock_Config();
+    MX_GPIO_Init();
+
+    MX_TIM6_Init();
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -81,7 +91,10 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  BitBangPWM_SetDutyCycle_1(50, 1000); // 50% duty cycle with a period of 1000 ms
+
+//  BitBangPWM_Init_1();
+//  BitBangPWM_Init_2();
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -102,7 +115,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+//	  HAL_Delay(5); // in milliseconds, 1 second per dot
+//	  HAL_GPIO_WritePin(GPIOA, PWM1_Pin, GPIO_PIN_RESET); // LED off
+//	  HAL_Delay(5); // 1 second pause between dots/dashes of same letter
+
+
     /* USER CODE END WHILE */
+	  reverse();
 
     /* USER CODE BEGIN 3 */
   }
@@ -239,10 +259,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-void Delay(uint32_t ms)
-{
-    HAL_Delay(ms);
-}
+
 // rewrite using hardware timer
 void BitBangPWM_Init_1()
 {
@@ -268,36 +285,30 @@ void BitBangPWM_Init_2()
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
-void BitBangPWM_SetDutyCycle_1(uint16_t dutyCycle, uint16_t period)
+void SetDutyCycle(uint16_t dutyCycle, uint16_t period, uint16_t pin)
 {
-    if (dutyCycle <= 100)
-    {
-        uint16_t onTime = (dutyCycle * period) / 100;
+	uint16_t onTime = (dutyCycle * period) / 100;
 
-        // Set the pin high for the on time
-        HAL_GPIO_WritePin(GPIOA, PWM1_Pin, GPIO_PIN_SET);
-        Delay(onTime);
+	if (dutyCycle != 0) {
+		HAL_GPIO_TogglePin(GPIOB, pin); // on
+		HAL_Delay(onTime);
 
-        // Set the pin low for the remaining time
-        HAL_GPIO_WritePin(GPIOA, PWM2_Pin, GPIO_PIN_RESET);
-        Delay(period - onTime);
-    }
+		HAL_GPIO_TogglePin(GPIOB, pin); // off
+		HAL_Delay(period - onTime);
+	}
+
 }
 
-void BitBangPWM_SetDutyCycle_2(uint16_t dutyCycle, uint16_t period)
-{
-    if (dutyCycle <= 100)
-    {
-        uint16_t onTime = (dutyCycle * period) / 100;
+void forward() {
+	  // forward
+	  SetDutyCycle(75, 10, PWM1_Pin);
+	  SetDutyCycle(0, 10, PWM2_Pin);
+}
 
-        // Set the pin high for the on time
-        HAL_GPIO_WritePin(GPIOA, PWM2_Pin, GPIO_PIN_SET);
-        Delay(onTime);
-
-        // Set the pin low for the remaining time
-        HAL_GPIO_WritePin(GPIOA, PWM2_Pin, GPIO_PIN_RESET);
-        Delay(period - onTime);
-    }
+void reverse() {
+	  // backwards
+	  SetDutyCycle(75, 10, PWM2_Pin);
+	  SetDutyCycle(0, 10, PWM1_Pin);
 }
 
 
